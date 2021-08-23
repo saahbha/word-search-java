@@ -1,4 +1,4 @@
-This program solves word search puzzles with the Boyer-Moore String matching algorithm.
+This program solves word search puzzles with the Boyer-Moore String matching algorithm. For documentation on how this program was made, see [https://saahbha.github.io/projects/1word-search.html](https://saahbha.github.io/projects/1word-search.html)
 
 Demo this program by running main() from WordSearch.java in your IDE. To change the problem, change the `'problemName'` variable at the beginning of main(). The program reads 3 input files which should be placed in `\testFiles`:
 
