@@ -4,13 +4,13 @@ import java.util.Scanner;
 
 public class WordSearch {
 
-    public static int[] find(final char[][] crossword, final String target) {
-        int dim = crossword[0].length;
+    public static int[] find(final char[][] puzzleGrid, final String target) {
+        int dim = puzzleGrid[0].length;
         //generate strings for each basic direction
-        String[] vertical = getVertical(crossword);
-        String[] horizontal = getHorizontal(crossword);
-        String[] aDiagonal = getAscendingDiagonal(crossword);
-        String[] dDiagonal = getDescendingDiagonal(crossword);
+        String[] vertical = getVertical(puzzleGrid);
+        String[] horizontal = getRows(puzzleGrid);
+        String[] aDiagonal = getAscendingDiagonals(puzzleGrid);
+        String[] dDiagonal = getDescendingDiagonals(puzzleGrid);
 
         //make sets of arrays for reverse order
         String[] rvertical = new String[vertical.length];
@@ -118,68 +118,70 @@ public class WordSearch {
         return new int[] {row, col, dir};
     }
 
-    private static String[] getVertical(final char[][] crossword) {
-        int dim = crossword[0].length;
-        String[] vertical = new String[dim];
-        //Get vertical Strings from the crossword
+    private static String[] getVertical(final char[][] puzzleGrid) {
+        int dim = puzzleGrid[0].length;
+        String[] columns = new String[dim];
+        //Get Column Strings from the puzzleGrid
         //iterate over cols
         for (int n = 0; n < dim; n++) {
-            vertical[n] = "";
+            columns[n] = "";
             //iterate over rows
             for (int m = 0; m < dim; m++) {
-                vertical[n] += crossword[m][n];
+                columns[n] += puzzleGrid[m][n];
             }
         }
-        return vertical;
+        return columns;
     }
 
-    private static String[] getHorizontal(final char[][] crossword) {
-        int dim = crossword[0].length;
-        String[] horizontal = new String[dim];
-        //Get Horizontal Strings from the crossword
+    private static String[] getRows(final char[][] puzzleGrid) {
+        int dim = puzzleGrid[0].length;
+        String[] rows = new String[dim];
+        //Get Row Strings from the puzzleGrid
         //iterate over rows
         for (int m = 0; m < dim; m++) {
-            horizontal[m] = "";
+            rows[m] = "";
             //iterate over cols
             for (int n = 0; n < dim; n++) {
-                horizontal[m] += crossword[m][n];
+                rows[m] += puzzleGrid[m][n];
             }
         }
-        return horizontal;
+        return rows;
     }
 
-    private static String[] getAscendingDiagonal(final char[][] crossword) {
-        int dim = crossword[0].length;
+    private static String[] getAscendingDiagonals(final char[][] puzzleGrid) {
+        int dim = puzzleGrid[0].length;
         String[] ascendingDiagonal = new String[dim*2 - 1];
-        for (int i = 0; i < dim; i++) {
-            ascendingDiagonal[i] = "";
-            for (int j = 0; j <= i; j++) {
-                ascendingDiagonal[i] += crossword[i - j][j];
+        for (int startRow = 0; startRow < dim; startRow++) {
+            ascendingDiagonal[startRow] = "";
+            for (int col = 0; col <= startRow; col++) {
+                ascendingDiagonal[startRow] += puzzleGrid[startRow - col][col];
             }
         }
-        for (int i = 1; i < dim; i++) {
-            ascendingDiagonal[dim + i - 1] = "";
-            for (int j = 0; j < dim - i; j++) {
-                ascendingDiagonal[dim + i - 1] += crossword[dim - 1  - j][i + j];
+        for (int startCol = 1; startCol < dim; startCol++) {
+            ascendingDiagonal[dim + startCol - 1] = "";
+            for (int row = dim - 1; row >= startCol; row--) {
+                ascendingDiagonal[dim - 1 + startCol] += puzzleGrid[row][startCol + (dim - 1) - row];
             }
         }
 
         return ascendingDiagonal;
     }
 
-    private static String[] getDescendingDiagonal(final char[][] crossword) {
-        int dim = crossword[0].length;
+    private static String[] getDescendingDiagonals(final char[][] puzzleGrid) {
+        int dim = puzzleGrid[0].length;
         String[] descendingDiagonal = new String[dim*2 - 1];
-        for (int i = 0; i < dim; i++) {
-            descendingDiagonal[i] = "";
-            for (int j = 0; j <= i; j++) {
-                descendingDiagonal[i] += crossword[j][dim - 1 - i + j];
+        for (int startCol = dim - 1; startCol >= 0; startCol--) {
+            int arrIndex = dim - 1 - startCol;
+            descendingDiagonal[arrIndex] = "";
+            for (int row = 0; row <= arrIndex; row++) {
+                descendingDiagonal[arrIndex] += puzzleGrid[row][startCol + row];
             }
         }
-        for (int i = 1; i < dim; i++) {
-            descendingDiagonal[dim + i - 1] = "";
-            for (int j = 0; j < dim - i; j++) {
-                descendingDiagonal[dim + i - 1] += crossword[i + j][j];
+        for (int startRow = 1; startRow < dim; startRow++) {
+            int arrIndex = dim - 1 + startRow;
+            descendingDiagonal[arrIndex] = "";
+            for (int col = 0; col <= dim - 1 - startRow; col++) {
+                descendingDiagonal[arrIndex] += puzzleGrid[startRow + col][col];
             }
         }
 
@@ -234,12 +236,12 @@ public class WordSearch {
     public static void main(String[] args) {
         long startTime = System.nanoTime();
 
-        String noun = "Artists";
-        char[][] matrix = readDataMatrixIn("testFiles/Famous" + noun + "_puzzle.txt");
+        String problemName = "FamousBooks";
+        char[][] matrix = readDataMatrixIn("testFiles/" + problemName + "_puzzle.txt");
         System.out.println("Successful read in matrix!");
-        String[] words = readLinesIn("testFiles/Famous" + noun + "_words.txt");
+        String[] words = readLinesIn("testFiles/" + problemName + "_words.txt");
         System.out.println("Successful read in find data!");
-        String[] solutions = readLinesIn("testFiles/Famous" + noun + "_solution.txt");
+        String[] solutions = readLinesIn("testFiles/" + problemName + "_solution.txt");
         System.out.println("Successful read in solution data!");
         System.out.println();
 
